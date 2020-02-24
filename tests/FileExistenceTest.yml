@@ -5,3 +5,8 @@ fileExistenceTests:
 - name: 'Package File Exist test'
   path: '/app'
   shouldExist: true
+- name: 'Root'
+  path: '/'
+  shouldExist: true
+  uid: 0
+  gid: 0
