@@ -46,7 +46,45 @@ variables:
   value: 'ubuntu-latest'
 
 stages:
-- template: templates/BuildStage.yaml
+- stage: Build
+  displayName: Build stage
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+          
+    - upload: vote/helm
+      artifact: vote/helm
+
+  - job: Test
+    dependsOn: Build
+    displayName: Run tests
+    variables: { agent.disablelogplugin.TestResultLogPlugin: 'false' }
+    pool:
+      vmImage: $(vmImageName)
+    steps:  
+    - task: ContainerStructureTest@0
+      displayName: 'Container Structure Test '
+      inputs:
+        dockerRegistryServiceConnection: '$(dockerRegistryServiceConnection)'
+        repository: '$(imageRepository)'
+        tag: '$(tag)'
+        configFile: tests/FileExistenceTest.yml
+        testRunTitle: 'File Existence test'
+        failTaskOnFailedTests: false
+
 
 - stage: ReviewApp
   displayName: Deploy Pull Request
