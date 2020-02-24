@@ -5,3 +5,10 @@ fileExistenceTests:
 - name: 'Package File Exist test'
   path: '/app'
   shouldExist: true
+- name: 'Fake Dir'
+  path: '/foo/bar'
+  shouldExist: true
+- name: 'Wrong permissions'
+  path: '/etc/apt/sources.list'
+  permissions: '-rwxrwxrwx'
+  shouldExist: true
