@@ -81,7 +81,7 @@
 
         private static async Task CheckQueueAsync(CloudQueue queue, SqlConnection sqlConnection)
         {
-            throw new ArgumentNullException("Interference");	
+            // throw new ArgumentNullException("Interference");	
 	    Console.WriteLine("Breaekpoint - 1");
 		
             CloudQueueMessage retrievedMessage = await queue.GetMessageAsync();
